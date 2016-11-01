@@ -48,9 +48,4 @@ public class DemoController {
     public User deactivateUser(@PathVariable(value = "id") Long id) throws UserNotFoundException {
         return userService.makeUserDeactive(id);
     }
-
-
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(DemoController.class, args);
-    }
 }
