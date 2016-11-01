@@ -1,0 +1,32 @@
+declarations {
+	category USER indexed by Long
+	
+	event userCreated() = {
+    		monitor trigger fireUserCreated(Long id, String name)    
+    		belonging to USER with index {{1L}}
+    }    
+}
+
+state {
+	int userCount = {0}
+	
+} in {
+	
+	userCreated() -> {
+			^state.userCount++
+			System.out.println("Total Number of users in the system " + ^state.userCount)
+		}
+}
+
+
+replicate {
+	int loginCount = {0}
+}
+foreach USER u {
+	userCreated() -> {
+			^state.loginCount++
+			System.out.println("User has now logged in for " + ^state.loginCount)
+	} 
+}
+
+
