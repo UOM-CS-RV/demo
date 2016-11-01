@@ -4,6 +4,10 @@ package mt.edu.um.cs.rv.demo.controllers;
 import mt.edu.um.cs.rv.demo.model.User;
 import mt.edu.um.cs.rv.demo.services.UserNotFoundException;
 import mt.edu.um.cs.rv.demo.services.UserService;
+import valour.demo.monitor_triggers.MonitorTrigger1;
+
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +22,11 @@ public class DemoController {
     @Autowired
     UserService userService;
 
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    @ResponseBody
+    public Collection<User> getUsers() {
+        return userService.getUsers();
+    }
 
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     @ResponseBody

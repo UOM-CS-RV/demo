@@ -4,6 +4,7 @@ import mt.edu.um.cs.rv.demo.model.User;
 import mt.edu.um.cs.rv.demo.model.UserState;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -39,7 +40,11 @@ public class UserService {
     public User makeUserDeactive(Long id) throws UserNotFoundException {
         return updateState(id, UserState.DEACTIVATED);
     }
-
+    
+    public Collection<User> getUsers() {
+    		return users.values();
+    }
+    
     public User getUser(Long id) throws UserNotFoundException {
         User user = users.get(id);
 
