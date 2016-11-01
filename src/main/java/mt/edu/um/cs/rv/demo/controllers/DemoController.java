@@ -31,7 +31,12 @@ public class DemoController {
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     @ResponseBody
     public User createUser(@RequestParam(value = "username") String username) {
-        return userService.createNewUser(username);
+        User newUser = userService.createNewUser(username);
+        
+        MonitorTrigger1 monitorTrigger1 = new MonitorTrigger1();
+	    monitorTrigger1.accept(newUser.getId(), newUser.getUsername());
+	    
+	    return newUser;
     }
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
