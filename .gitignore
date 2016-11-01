@@ -13,3 +13,5 @@ hs_err_pid*
 *.iml
 .idea
 /target/
+src-gen
+src/main/generated-sources
