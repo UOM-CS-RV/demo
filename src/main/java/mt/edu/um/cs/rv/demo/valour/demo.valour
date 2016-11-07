@@ -7,14 +7,26 @@ declarations {
     }    
 }
 
+userCreated() -> {System.out.println("abc")}
+
 state {
 	int userCount = {0}
 	
-} in {
+} in { 
 	
-	userCreated() -> {
+	userCreated() -> { 
 			^state.userCount++
 			System.out.println("Total Number of users in the system " + ^state.userCount)
+		}
+		
+		state {
+			int x = {10}
+		}
+		in {
+			userCreated() -> {
+				^state.x = ^state.parent.userCount
+				System.out.println("X " + ^state.x)
+			}
 		}
 }
 
@@ -27,6 +39,19 @@ foreach USER u {
 			^state.loginCount++
 			System.out.println("User has now logged in for " + ^state.loginCount)
 	} 
+	
+	replicate {
+		int loginCount = {10}
+	}
+	foreach USER u {
+		userCreated() -> {
+				^state.loginCount++
+				System.out.println("User has now logged in for (+10) " + ^state.loginCount)
+		} 
+	
+	
+}
+		
 }
 
 
