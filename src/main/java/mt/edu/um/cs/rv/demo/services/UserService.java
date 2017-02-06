@@ -18,6 +18,8 @@ public class UserService {
     private AtomicLong idGenerator = new AtomicLong();
 
     private Map<Long, User> users = new ConcurrentHashMap<>();
+    
+    private Map<String, User> usersByUsername = new ConcurrentHashMap<>();
 
     public User createNewUser(String username) {
         User user = new User();
@@ -26,6 +28,7 @@ public class UserService {
         user.setUsername(username);
 
         users.put(user.getId(), user);
+        usersByUsername.put(username, user);
         return user;
     }
 
@@ -52,6 +55,15 @@ public class UserService {
             throw new UserNotFoundException(id);
         }
         return users.get(id);
+    }
+    
+    public User getUser(String username) throws UserNotFoundException {
+    		User user = usersByUsername.get(username);
+    		
+    		if (user == null) {
+    			throw new UserNotFoundException(username);
+    		}
+    		return usersByUsername.get(username);
     }
 
     private User updateState(Long id, UserState newState) throws UserNotFoundException {

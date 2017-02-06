@@ -62,4 +62,10 @@ public class DemoController {
     public User deactivateUser(@PathVariable(value = "id") Long id) throws UserNotFoundException {
         return userService.makeUserDeactive(id);
     }
+    
+    @RequestMapping(value = "/login/{username}", method = RequestMethod.POST)
+    @ResponseBody
+    public User login(@PathVariable(value="username") String username) throws UserNotFoundException {
+    		return userService.getUser(username);
+    }
 }
