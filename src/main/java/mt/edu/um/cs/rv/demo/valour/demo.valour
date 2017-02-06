@@ -1,13 +1,25 @@
+import mt.edu.um.cs.rv.demo.valour.external_triggers.SpringMVCInterceptorExternalTrigger
+import mt.edu.um.cs.rv.demo.valour.external_triggers.OnSuccessfulLoginTriggerData
+import java.time.LocalDateTime
+
 declarations {
 	category USER indexed by Long
 	
 	event userCreated() = {
     		monitor trigger fireUserCreated(Long id, String name)    
     		belonging to USER with index {{1L}}
-    }    
+    }  
+    
+    event userLogin(String username, LocalDateTime loginTime) = {
+    		external trigger SpringMVCInterceptorExternalTrigger generates OnSuccessfulLoginTriggerData d
+    		where username = {{d.username}}
+			loginTime = {{d.loginTime}}
+		when {{username != null}}
+    }  
 }
 
 userCreated() -> {System.out.println("abc")}
+userLogin(username, loginTime) | {{username != null}} -> { System.out.println("User login " + username + " at " + loginTime.toString)}
 
 state {
 	int userCount = {0}
