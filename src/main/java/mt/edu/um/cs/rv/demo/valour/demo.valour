@@ -1,9 +1,11 @@
 import mt.edu.um.cs.rv.demo.valour.external_triggers.SpringMVCInterceptorExternalTrigger
 import mt.edu.um.cs.rv.demo.valour.external_triggers.OnSuccessfulLoginTriggerData
+import static mt.edu.um.cs.rv.monitors.results.MonitorResult.*
 import java.time.LocalDateTime
 
 declarations {
 	category USER indexed by Long
+	category USERNAME indexed by String
 	
 	event userCreated() = {
     		monitor trigger fireUserCreated(Long id, String name)    
@@ -15,11 +17,18 @@ declarations {
     		where username = {{d.username}}
 			loginTime = {{d.loginTime}}
 		when {{username != null}}
+		belonging to USERNAME with index {{username}}
     }  
 }
 
-userCreated() -> {System.out.println("abc")}
-userLogin(username, loginTime) | {{username != null}} -> { System.out.println("User login " + username + " at " + loginTime.toString)}
+userCreated() -> {
+	System.out.println("abc")
+	ok
+}
+userLogin(username, loginTime) | {{username != null}} -> { 
+	System.out.println("User login " + username + " at " + loginTime.toString)
+	ok
+}
 
 state {
 	int userCount = {0}
@@ -29,6 +38,7 @@ state {
 	userCreated() -> { 
 			^state.userCount++
 			System.out.println("Total Number of users in the system " + ^state.userCount)
+			ok
 		}
 		
 		state {
@@ -38,6 +48,7 @@ state {
 			userCreated() -> {
 				^state.x = ^state.parent.userCount
 				System.out.println("X " + ^state.x)
+				ok
 			}
 		}
 }
@@ -50,6 +61,7 @@ foreach USER u {
 	userCreated() -> {
 			^state.loginCount++
 			System.out.println("User has now logged in for " + ^state.loginCount)
+			ok
 	} 
 	
 	replicate {
@@ -59,11 +71,38 @@ foreach USER u {
 		userCreated() -> {
 				^state.loginCount++
 				System.out.println("User has now logged in for (+10) " + ^state.loginCount)
-		} 
-	
-	
-}
+				ok
+		}
 		
+	} 
 }
+
+state {
+	int successfulLoginCounts = {0}
+} in {
+	userLogin(username, loginTime) | {{username != null}} -> { 
+		^state.successfulLoginCounts++
+		System.out.println("Incrementing total successful login counts to: " + ^state.successfulLoginCounts)
+		ok
+	}
+	
+	replicate {
+		int myCount = {0}	
+	}
+	foreach USERNAME u {
+		userLogin(username, loginTime) | {{username != null}} -> { 
+			^state.myCount++
+			System.out.println("Incrementing successful login counts for user " + username + " to: " + ^state.myCount)
+			ok
+		}	
+		
+	
+		
+	}
+			
+}	
+
+
+
 
 

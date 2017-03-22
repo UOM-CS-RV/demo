@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriUtils;
 
 import mt.edu.um.cs.rv.eventmanager.observers.ExternalEventObserver;
+import mt.edu.um.cs.rv.monitors.results.MonitorResult;
 
 @Component
 public class SpringMVCInterceptorExternalTrigger extends ExternalEventObserver<String, OnSuccessfulLoginTriggerData, Boolean> implements HandlerInterceptor {
@@ -45,7 +46,8 @@ public class SpringMVCInterceptorExternalTrigger extends ExternalEventObserver<S
 	}
 
 	@Override
-	public Boolean generateResponse(String m, OnSuccessfulLoginTriggerData t) {
+	public Boolean generateResponse(String m, OnSuccessfulLoginTriggerData t, MonitorResult mr) {
+		System.out.println(mr);
 		//TODO should this be expanded?
 		return true;
 	}
@@ -53,6 +55,11 @@ public class SpringMVCInterceptorExternalTrigger extends ExternalEventObserver<S
 	@Override
 	public void sendResponse(Boolean r) {
 		//TODO nothing to do here at this point
+	}
+	
+	@Override
+	public Boolean shouldEventBeSynchronous(OnSuccessfulLoginTriggerData t) {
+		return true;
 	}
 	
 }
